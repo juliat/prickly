@@ -21,21 +21,55 @@ class Face {
   // past
   float lastEyeHeight;
   float lastEyebrowHeight;
+  
+  boolean wasSmiling = false;
+  float startedSmilingTime = 0;
+  float smilingTime = 0;
+  
+  float stoppedSmilingTime = 0;
+  float timeSinceSmile = 0;
 
   Face() {
   }
 
   boolean isSmiling() {
-    float minSmileWidth = 15;
-    float minSmileHeight = 2;
 
-    if ((mouthWidth > minSmileWidth) &&
-      (mouthHeight > minSmileHeight)) {
+    if (mouthIsSmiling()) {
+      if (wasSmiling == false) {
+        wasSmiling = true;
+        startedSmilingTime = millis();
+        timeSinceSmile = 0;
+      }
+      else {
+        smilingTime = millis() - startedSmilingTime;
+        println("smilingTime: ");
+        print(smilingTime);
+        println("");
+      }
       return true;
     }
-    return false;
+    else {
+      if (wasSmiling == false) {
+        timeSinceSmile = millis() - stoppedSmilingTime;
+        println("timeSinceSmile: ");
+        print(timeSinceSmile);
+        println("");
+      }
+      else {
+        wasSmiling = false;
+        stoppedSmilingTime = millis();
+        smilingTime = 0;
+      }
+      return false;
+    }
   }
-
+  
+  boolean mouthIsSmiling() {
+    float minSmileWidth = 15;
+    float minSmileHeight = 2;
+    return ((mouthWidth > minSmileWidth) && (mouthHeight > minSmileHeight));
+  }
+  
   boolean isBlinking() {
     float eyeHeight = (face.eyeLeft + face.eyeRight) / 2;
     float eyebrowHeight = (face.eyebrowLeft + face.eyebrowRight) / 2;
