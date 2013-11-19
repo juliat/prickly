@@ -49,36 +49,10 @@ class Face {
 
   boolean isSpeaking() {
     int speakingMouthHeightThreshold = 2;
-    /* Debug: 
-     println("MOUTHHEIGHT");
-     println(face.mouthHeight);
-     */
-     println("totalTime: ");
-     print(totalTime);
-     println("");
-     
     if (face.mouthHeight > speakingMouthHeightThreshold) {
-      if (!wasSpeaking) {
-        totalTime = 0;
-        startSpeakingTime = millis();
-        wasSpeaking = true;
-      }
-      else {
-        totalTime = millis() - startSpeakingTime;
-      }
-      println("SPEAKING");
       return true;
     } 
     else {
-      if (wasSpeaking) {
-        println("NOT SPEAKING");
-        stoppedSpeakingTime = millis();
-        wasSpeaking = false;
-        totalTime = 0;
-      }
-      else {
-        totalTime = -1*(millis() - stoppedSpeakingTime);
-      }
       return false;
     }
   }
