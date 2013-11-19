@@ -51,9 +51,6 @@ class Face {
     else {
       if (wasSmiling == false) {
         timeSinceSmile = millis() - stoppedSmilingTime;
-        println("timeSinceSmile: ");
-        print(timeSinceSmile);
-        println("");
       }
       else {
         wasSmiling = false;

@@ -12,8 +12,8 @@ float maxPrickliness = 0.7;
 float minPrickliness = 0;
 
 float closeness = 0.3;
-float maxCloseness = 0.5;
-float minCloseness = 0.2;
+float maxCloseness = 0.7;
+float minCloseness = 0.15;
 
 void setup() {
   // default size is 640 by 480
@@ -32,15 +32,15 @@ void setup() {
 }
 
 void draw() {  
-  background(255);
+  background(250);
   noStroke();
 
   updatePrickliness();
 
   if (face.found > 0) {
-
+    
     // draw such that the center of the face is at 0,0
-    translate(face.posePosition.x*faceScale, face.posePosition.y*faceScale);
+    translate(face.posePosition.x*faceScale*closeness, face.posePosition.y*faceScale*closeness);
 
     // scale things down to the size of the tracked face
     // then shrink again by half for convenience
@@ -53,8 +53,7 @@ void draw() {
     rotateX (0 - face.poseOrientation.x); 
     // rotateZ (    face.poseOrientation.z); 
 
-    float fill = map(prickliness, minPrickliness, maxPrickliness, 0, 240);
-    fill = 240 - fill;
+    float fill = map(prickliness, minPrickliness, maxPrickliness, 100, 200);
     fill((int)fill);
     
     // drawEyes();
@@ -110,8 +109,8 @@ void updatePrickliness() {
     prickliness = map(prickliness, 0, transitionTime, minPrickliness, maxPrickliness);
   }
   
-  antiPrickliness = constrain(face.smilingTime, 0, transitionTime*3);
-  antiPrickliness = -1 * map(antiPrickliness, 0, transitionTime*3, minPrickliness, maxPrickliness);
+  antiPrickliness = constrain(face.smilingTime, 0, transitionTime);
+  antiPrickliness = -1 * map(antiPrickliness, 0, transitionTime, minPrickliness, maxPrickliness);
   
   prickliness = prickliness + antiPrickliness;
   constrain(prickliness, minPrickliness, maxPrickliness);
