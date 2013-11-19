@@ -59,20 +59,19 @@ void draw() {
     
     // drawEyes();
     // drawMouth();
-    print(face.toString());
+    // print(face.toString());
 
     faceOutline = new ArrayList<PVector>();
     getFaceOutlinePoints();
     drawOutline();
     
-    if (face.isBlinking()) {
+    /*if (face.isBlinking()) {
       println("BLINKED");
     }
 
     face.lastEyeHeight = face.eyeLeft;
     face.lastEyebrowHeight = face.eyeRight;
-    println("lastEyeHeight " + face.lastEyeHeight);
-    println("lastEyebrowHeight " + face.lastEyebrowHeight);
+    */
   }
 }
 
@@ -114,22 +113,11 @@ void updatePrickliness() {
   antiPrickliness = constrain(face.smilingTime, 0, transitionTime*3);
   antiPrickliness = -1 * map(antiPrickliness, 0, transitionTime*3, minPrickliness, maxPrickliness);
   
-  println("prickliness: ");
-  print(prickliness);
-  println("");
-  println("antiPrickliness: ");
-  print(antiPrickliness);
-  println("");
-  
   prickliness = prickliness + antiPrickliness;
   constrain(prickliness, minPrickliness, maxPrickliness);
   if (prickliness < 0) {
     prickliness = 0;
   }
-
-  println("final prickliness: ");
-  print(prickliness);
-  println("");
 }
 
 void getFaceOutlinePoints() {
