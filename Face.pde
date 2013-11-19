@@ -27,7 +27,7 @@ class Face {
   float smilingTime = 0;
   
   float stoppedSmilingTime = 0;
-  float timeSinceSmile = 0;
+  float timeSinceSmile = 10000;
 
   Face() {
   }

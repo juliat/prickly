@@ -5,18 +5,22 @@ OscP5 oscP5;
 Face face = new Face();
 float faceScale = 1; // default - no resizing of face
 ArrayList<PVector> faceOutline = new ArrayList<PVector>();
-int numPoints = 60;
-float initialPrickliness = 0.02;
+int numPoints = 100;
+float initialPrickliness = 0.2;
 float prickliness = initialPrickliness;
-float maxPrickliness = 0.2;
+float maxPrickliness = 0.7;
 float minPrickliness = 0;
+
+float closeness = 0.3;
+float maxCloseness = 0.5;
+float minCloseness = 0.2;
 
 void setup() {
   // default size is 640 by 480
   int defaultWidth = 640;
   int defaultHeight = 480;
 
-  faceScale = 0.5; // shrink by half
+  faceScale = 1; // shrink by half
 
   int realWidth = (int)(defaultWidth * faceScale);
   int realHeight = (int)(defaultHeight * faceScale);
@@ -29,7 +33,9 @@ void setup() {
 
 void draw() {  
   background(255);
-  stroke(0);
+  noStroke();
+
+  updatePrickliness();
 
   if (face.found > 0) {
 
@@ -38,17 +44,21 @@ void draw() {
 
     // scale things down to the size of the tracked face
     // then shrink again by half for convenience
-    scale(face.poseScale*0.5);
+    
+    closeness = map(prickliness, minPrickliness, maxPrickliness, maxCloseness, minCloseness);
+    scale(face.poseScale*closeness);
 
     // rotate the drawing based on the orientation of the face
     rotateY (0 - face.poseOrientation.y); 
     rotateX (0 - face.poseOrientation.x); 
-    rotateZ (    face.poseOrientation.z); 
+    // rotateZ (    face.poseOrientation.z); 
 
-    noFill();
+    float fill = map(prickliness, minPrickliness, maxPrickliness, 0, 240);
+    fill = 240 - fill;
+    fill((int)fill);
     
-    drawEyes();
-    drawMouth();
+    // drawEyes();
+    // drawMouth();
     print(face.toString());
 
     faceOutline = new ArrayList<PVector>();
@@ -92,19 +102,17 @@ void drawOutline() {
 
 }
 
-void getFaceOutlinePoints() {
-  int xCenter = 0;
-  int yCenter = 0;
-  
+void updatePrickliness() {
   float antiPrickliness = 0;
+  int transitionTime = 30000;
 
   if (!face.isSmiling()) {
-    prickliness = constrain(face.timeSinceSmile, 0, 6000);
-    prickliness = map(prickliness, 0, 6000, minPrickliness, maxPrickliness);
+    prickliness = constrain(face.timeSinceSmile, 0, transitionTime);
+    prickliness = map(prickliness, 0, transitionTime, minPrickliness, maxPrickliness);
   }
   
-  antiPrickliness = constrain(face.smilingTime, 0, 6000);
-  antiPrickliness = -1 * map(antiPrickliness, 0, 6000, minPrickliness, maxPrickliness);
+  antiPrickliness = constrain(face.smilingTime, 0, transitionTime*3);
+  antiPrickliness = -1 * map(antiPrickliness, 0, transitionTime*3, minPrickliness, maxPrickliness);
   
   println("prickliness: ");
   print(prickliness);
@@ -122,10 +130,14 @@ void getFaceOutlinePoints() {
   println("final prickliness: ");
   print(prickliness);
   println("");
+}
 
+void getFaceOutlinePoints() {
+  int xCenter = 0;
+  int yCenter = 0;
   
   for (int i=0; i <= numPoints; i++) {
-    float radius = 35;
+    float radius = 30;
   
     // iterate and draw points around circle
     float theta = 0;
